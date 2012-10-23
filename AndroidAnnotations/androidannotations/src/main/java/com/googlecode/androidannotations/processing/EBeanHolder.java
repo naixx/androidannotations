@@ -24,6 +24,7 @@ import com.googlecode.androidannotations.processing.EBeansHolder.Classes;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JConditional;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
@@ -32,7 +33,7 @@ import com.sun.codemodel.JVar;
 
 public class EBeanHolder {
 
-	public JDefinedClass eBean;
+	public final JDefinedClass generatedClass;
 	/**
 	 * Only defined on activities
 	 */
@@ -84,7 +85,16 @@ public class EBeanHolder {
 	/**
 	 * TextWatchers by idRef
 	 */
-	public HashMap<String, TextWatcherHolder> textWatchers = new HashMap<String, TextWatcherHolder>();
+	public final HashMap<String, TextWatcherHolder> textWatchers = new HashMap<String, TextWatcherHolder>();
+
+	public JConditional onActivityResultLastCondition;
+	public JMethod onActivityResultMethod;
+	public final HashMap<String, JBlock> onActivityResultBlocks = new HashMap<String, JBlock>();
+
+	/**
+	 * onSeekBarChangeListeners by idRef
+	 */
+	public final HashMap<String, OnSeekBarChangeListenerHolder> onSeekBarChangeListeners = new HashMap<String, OnSeekBarChangeListenerHolder>();
 
 	public JVar fragmentArguments;
 	public JFieldVar fragmentArgumentsBuilderField;
@@ -100,9 +110,10 @@ public class EBeanHolder {
 	private final EBeansHolder eBeansHolder;
 	public final Class<? extends Annotation> eBeanAnnotation;
 
-	public EBeanHolder(EBeansHolder eBeansHolder, Class<? extends Annotation> eBeanAnnotation) {
+	public EBeanHolder(EBeansHolder eBeansHolder, Class<? extends Annotation> eBeanAnnotation, JDefinedClass generatedClass) {
 		this.eBeansHolder = eBeansHolder;
 		this.eBeanAnnotation = eBeanAnnotation;
+		this.generatedClass = generatedClass;
 	}
 
 	public Classes classes() {
